@@ -3,7 +3,7 @@
 ### DOWNLOAD ###
 
 wget -O /tmp/torShell.zip https://github.com/rramirezacosta/torshell/archive/master.zip
-unzip /tmp/torShell.zip -d /tmp/torShell_masterdir
+unzip /tmp/torShell.zip -d /tmp/torshell_masterdir
 rm /tmp/torShell.zip
 
 ### DELETE PREVIOUS INSTALATIONS ###
@@ -14,7 +14,7 @@ fi
 
 ### INSTALL NEW ONE ###
 
-mv /tmp/torShell_masterdir/TorShell-master/TorShell@itepo.mx $HOME/.local/share/gnome-shell/extensions
+mv /tmp/torshell_masterdir/torshell-master/TorShell@itepo.mx $HOME/.local/share/gnome-shell/extensions
 rm -rf /tmp/torShell_masterdir/
 
 ### ACTIVATE THE EXTENSION IN GNOME-SHEL ###
