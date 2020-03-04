@@ -15,7 +15,7 @@ Thats it!
 * Tor package that comes with your distro
 * Wget and unzip to run the installer
 
-## INSTALATION
+## INSTALLATION
 
 As regular user run:
 
@@ -23,5 +23,15 @@ As regular user run:
 curl https://raw.githubusercontent.com/rramirezacosta/torshell/master/install.sh | bash
 ```
 
-You may have to reload Gnome-Shell in order to appy the changes.
+You may have to restart your Gnome-Shell session in order to apply the changes.
+
+## UNINSTALL
+
+As regular user run:
+
+```
+curl https://raw.githubusercontent.com/rramirezacosta/torshell/master/uninstall.sh | bash
+```
+
+
 

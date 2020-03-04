@@ -15,7 +15,7 @@ fi
 ### INSTALL NEW ONE ###
 
 mv /tmp/torshell_masterdir/torshell-master/TorShell@itepo.mx $HOME/.local/share/gnome-shell/extensions
-rm -rf /tmp/torShell_masterdir/
+rm -rf /tmp/torshell_masterdir/
 
 ### ACTIVATE THE EXTENSION IN GNOME-SHEL ###
 
@@ -30,4 +30,8 @@ dconf write /org/gnome/shell/enabled-extensions "$value"
 value=${value/]/, \'TorShell@itepo.mx\']}
 value="${value/[,/[}"
 dconf write /org/gnome/shell/enabled-extensions "$value"
+
+
+echo "You may have to restart your Gnome-Shell session in order to apply the changes."
+
 
