@@ -36,7 +36,7 @@ function isTorActive() {
 
 function refreshUI() {
     icon.gicon = isTorActive() ? Gio.icon_new_for_string(`${Me.path}/icons/${EnabledIcon}.svg`) : Gio.icon_new_for_string(`${Me.path}/icons/${DisabledIcon}.svg`);
-    
+
 }
 
 function update_proxy_settings() {
@@ -52,7 +52,7 @@ function update_proxy_settings() {
 
 function _isJobDone() {
     let done = false;
-    if (action == "start") {done = isTorActive();}
+    if (action == "start") { done = isTorActive(); }
     else { done = !isTorActive(); }
     if (!isPkExecThreadActive()) {
         if (done) {
@@ -97,8 +97,6 @@ function init() {
         style_class: 'panel-button',
         reactive: true,
         can_focus: true,
-        x_fill: true,
-        y_fill: false,
         track_hover: true
     });
 
