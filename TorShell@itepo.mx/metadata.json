@@ -3,8 +3,8 @@
    "description":"Tor Proxy Switch for Gnome Shell",
    "uuid":"TorShell@itepo.mx",
    "shell-version":[
-      "3.32",
-      "3.34"
+     "40",
+     "41"
    ],
    "url":"https://github.com/rramirezacosta/torshell"
 }
