@@ -1,0 +1,14 @@
+{
+  "name": "torshell",
+  "version": "2.0.0",
+  "private": true,
+  "description": "TorShell — GNOME Shell extension to toggle the Tor daemon and proxy",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint TorShell@itepo.mx"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0"
+  }
+}

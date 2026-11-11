@@ -1,121 +1,70 @@
-const St = imports.gi.St;
-const Gio = imports.gi.Gio;
-const Main = imports.ui.main;
-const GLib = imports.gi.GLib;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const Util = imports.misc.util;
-const PKEXEC_PATH = GLib.find_program_in_path('pkexec');
-let numbersOfPkexecProcess = 0;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-let text, button, icon;
-let maxNumberOfTry = 10;
-let numberOfTry = 0;
-let action = "start";
-const DisabledIcon = 'torshell-off-symbolic';
-const EnabledIcon = 'torshell-on-symbolic';
+import {TorService} from './torService.js';
+import {ProxyManager} from './proxy.js';
+import {TorIndicator} from './indicator.js';
 
-function getNumbersOfPkexecProcess() {
-    let [resPkExec, outPkExec] = GLib.spawn_command_line_sync("pgrep pkexec -c");
-    let outPkExecString = outPkExec.toString().replace(/(\r\n|\n|\r)/gm, "").trim();
-    return outPkExecString;
-}
+export default class TorShellExtension extends Extension {
+    enable() {
+        this._settings = this.getSettings();
+        this._proxy = new ProxyManager(this._settings);
+        this._service = new TorService(this._settings);
+        this._indicator = new TorIndicator(this, this._service);
 
-function isPkExecThreadActive() {
-    res = true;
-    if (numbersOfPkexecProcess == getNumbersOfPkexecProcess()) {
-        res = false;
+        this._stateChangedId = this._service.connect('state-changed',
+            (_service, state) => this._onStateChanged(state));
+
+        this._settingsChangedId = this._settings.connect('changed',
+            (_settings, key) => this._onSettingsChanged(key));
+
+        this._service.start();
+        this._indicator.sync();
     }
-    return res;
-}
 
-function isTorActive() {
-    let [resTor, outTor] = GLib.spawn_command_line_sync("systemctl is-active tor");
-    let outTorString = outTor.toString().replace(/(\r\n|\n|\r)/gm, "");
-    return outTorString == "active";
-}
+    disable() {
+        this._settings.disconnect(this._settingsChangedId);
+        this._settingsChangedId = 0;
 
-function refreshUI() {
-    icon.gicon = isTorActive() ? Gio.icon_new_for_string(`${Me.path}/icons/${EnabledIcon}.svg`) : Gio.icon_new_for_string(`${Me.path}/icons/${DisabledIcon}.svg`);
+        this._service.disconnect(this._stateChangedId);
+        this._stateChangedId = 0;
 
-}
+        this._indicator.destroy();
+        this._indicator = null;
 
-function update_proxy_settings() {
-    if (isTorActive()) {
-        Util.trySpawnCommandLine("dconf write /system/proxy/socks/host " + '"' + "'127.0.0.1'" + '"')
-        Util.trySpawnCommandLine("dconf write /system/proxy/socks/port 9050")
-        Util.trySpawnCommandLine("dconf write /system/proxy/mode " + '"' + "'manual'" + '"')
-    } else {
-        Util.trySpawnCommandLine("dconf write /system/proxy/mode " + '"' + "'none'" + '"')
+        this._service.destroy();
+        this._service = null;
+
+        this._proxy.destroy();
+        this._proxy = null;
+
+        this._settings = null;
     }
-}
 
+    _onStateChanged(state) {
+        this._syncProxy(state);
 
-function _isJobDone() {
-    let done = false;
-    if (action == "start") { done = isTorActive(); }
-    else { done = !isTorActive(); }
-    if (!isPkExecThreadActive()) {
-        if (done) {
-            numberOfTry = 0;
-            refreshUI();
-            update_proxy_settings();
-            return false;
+        this._indicator.sync();
+
+        if (state === 'failed') {
+            Main.notify('TorShell', _('The Tor service failed to start.'));
+        } else if (this._settings.get_boolean('notify-state-change')) {
+            if (state === 'active')
+                Main.notify('TorShell', _('Tor is now active.'));
+            else if (state === 'inactive')
+                Main.notify('TorShell', _('Tor is now inactive.'));
         }
-        if (numberOfTry > maxNumberOfTry) {
-            Main.notify('There was a problem ' + action + 'ing your TOR Daemon');
-            return false;
-        }
-        numberOfTry++;
-
-    }
-    return true;
-}
-
-
-function _toggle_tor() {
-    if (isTorActive()) {
-        action = "stop";
-    } else {
-        action = "start";
     }
 
-    numbersOfPkexecProcess = getNumbersOfPkexecProcess();
-
-    let cmd = PKEXEC_PATH + ' systemctl ' + action + ' ' + ' tor';
-    numberOfTry = 0;
-    try {
-        Util.trySpawnCommandLine(cmd);
-        GLib.timeout_add(0, 300, _isJobDone);
-    } catch (Exception) {
-        Main.notify("Crash !" + Exception);
+    _onSettingsChanged(key) {
+        if (key === 'manage-proxy' || key === 'socks-port')
+            this._syncProxy(this._service.state);
     }
-}
 
-
-function init() {
-    button = new St.Bin({
-        style_class: 'panel-button',
-        reactive: true,
-        can_focus: true,
-        track_hover: true
-    });
-
-    icon = new St.Icon({
-        icon_name: DisabledIcon,
-        style_class: 'system-status-icon'
-    });
-
-    button.set_child(icon);
-    button.add_style_class_name('panel-status-button');
-    button.connect('button-press-event', _toggle_tor);
-}
-
-function enable() {
-    Main.panel._rightBox.insert_child_at_index(button, 0);
-    refreshUI();
-    update_proxy_settings();
-}
-
-function disable() {
-    Main.panel._rightBox.remove_child(button);
+    _syncProxy(state) {
+        if (state === 'active' && this._settings.get_boolean('manage-proxy'))
+            this._proxy.apply();
+        else
+            this._proxy.restore();
+    }
 }

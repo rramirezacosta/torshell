@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.torshell"
+          path="/org/gnome/shell/extensions/torshell/">
+    <key name="tor-service" type="s">
+      <default>'tor.service'</default>
+      <summary>Tor systemd unit</summary>
+      <description>
+        Name of the systemd unit that runs the Tor daemon, for example
+        tor.service or tor@default.service.
+      </description>
+    </key>
+    <key name="socks-port" type="u">
+      <default>9050</default>
+      <summary>SOCKS port</summary>
+      <description>
+        Port on which Tor exposes its SOCKS proxy on localhost.
+      </description>
+    </key>
+    <key name="manage-proxy" type="b">
+      <default>true</default>
+      <summary>Manage the GNOME proxy automatically</summary>
+      <description>
+        Switch GNOME proxy settings to Tor while it is running and restore
+        them afterwards.
+      </description>
+    </key>
+    <key name="restore-proxy" type="b">
+      <default>true</default>
+      <summary>Restore previous proxy settings</summary>
+      <description>
+        Restore the proxy configuration that was active before Tor was
+        started. If disabled, the proxy mode is set to “none” when Tor stops.
+      </description>
+    </key>
+    <key name="notify-state-change" type="b">
+      <default>false</default>
+      <summary>Notify on state change</summary>
+      <description>
+        Show a desktop notification when the Tor daemon starts or stops.
+      </description>
+    </key>
+  </schema>
+</schemalist>

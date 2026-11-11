@@ -1,10 +1,17 @@
 {
-   "name":"TorShell",
-   "description":"Tor Proxy Switch for Gnome Shell",
-   "uuid":"TorShell@itepo.mx",
-   "shell-version":[
-     "40",
-     "41"
-   ],
-   "url":"https://github.com/rramirezacosta/torshell"
+    "uuid": "TorShell@itepo.mx",
+    "name": "TorShell",
+    "description": "Toggle the Tor daemon from the top bar and route your GNOME traffic through it while it is running.",
+    "shell-version": [
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51"
+    ],
+    "url": "https://github.com/rramirezacosta/torshell",
+    "settings-schema": "org.gnome.shell.extensions.torshell",
+    "gettext-domain": "torshell"
 }

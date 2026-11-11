@@ -1,0 +1,21 @@
+# Build artifacts
+*.shell-extension.zip
+*.zip
+build/
+dist/
+
+# GSettings schema (compiled at install/build time)
+TorShell@itepo.mx/schemas/gschemas.compiled
+
+# Translations
+po/*.mo
+*.pot
+
+# Node / linting
+node_modules/
+.eslintcache
+
+# Editors / OS
+*.swp
+*~
+.DS_Store
