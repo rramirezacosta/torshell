@@ -3,7 +3,7 @@ import js from '@eslint/js';
 export default [
     js.configs.recommended,
     {
-        files: ['TorShell@itepo.mx/**/*.js'],
+        files: ['TorShell@itepo.mx/**/*.js', 'tests/**/*.js'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
@@ -13,6 +13,7 @@ export default [
                 imports: 'readonly',
                 log: 'readonly',
                 print: 'readonly',
+                printerr: 'readonly',
                 console: 'readonly',
                 TextDecoder: 'readonly',
                 TextEncoder: 'readonly',

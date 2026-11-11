@@ -204,7 +204,8 @@ proxy.connect('g-properties-changed', () => this._syncState());
 
 ## 9. Testing checklist
 
-- [ ] `npm run lint` and `gjs -m TorShell@itepo.mx/extension.js` pass.
+- [x] `npm run lint` passes.
+- [x] `make test` passes (proxy apply/restore round-trip, systemd D-Bus watcher).
 - [ ] Nested dev shell: `dbus-run-session gnome-shell --devkit --wayland` (49+).
 - [ ] Enable → extension appears, no errors in `journalctl -f -o cat /usr/bin/gnome-shell`.
 - [ ] Inactive → click → pkexec prompt → `active`; UI updates from D-Bus (no polling).

@@ -27,6 +27,7 @@ export const TorService = GObject.registerClass({
         this._proxyId = 0;
         this._cancellable = null;
         this._proc = null;
+        this._actionCancellable = null;
         this._settingsId = 0;
     }
 
@@ -56,32 +57,37 @@ export const TorService = GObject.registerClass({
 
         // Unit objects only exist once systemd has loaded the unit, so ask
         // the manager to load it before creating the property proxy.
-        Gio.DBus.system.call(
-            SYSTEMD_BUS_NAME,
-            SYSTEMD_ROOT_PATH,
-            MANAGER_INTERFACE,
-            'LoadUnit',
-            new GLib.Variant('(s)', [unitName]),
-            new GLib.VariantType('(o)'),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            cancellable,
-            (_connection, result) => {
-                if (this._cancellable !== cancellable)
-                    return;
+        try {
+            Gio.DBus.system.call(
+                SYSTEMD_BUS_NAME,
+                SYSTEMD_ROOT_PATH,
+                MANAGER_INTERFACE,
+                'LoadUnit',
+                new GLib.Variant('(s)', [unitName]),
+                new GLib.VariantType('(o)'),
+                Gio.DBusCallFlags.NONE,
+                -1,
+                cancellable,
+                (_connection, result) => {
+                    if (this._cancellable !== cancellable)
+                        return;
 
-                let objectPath;
-                try {
-                    const reply = Gio.DBus.system.call_finish(result);
-                    [objectPath] = reply.deep_unpack();
-                } catch (e) {
-                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
-                        console.error(`TorShell: unable to load ${unitName}: ${e.message}`);
-                    return;
-                }
+                    let objectPath;
+                    try {
+                        const reply = _connection.call_finish(result);
+                        [objectPath] = reply.deep_unpack();
+                    } catch (e) {
+                        if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                            console.error(`TorShell: unable to load ${unitName}: ${e.message}`);
+                        return;
+                    }
 
-                this._createProxy(objectPath, cancellable);
-            });
+                    this._createProxy(objectPath, cancellable);
+                });
+        } catch (e) {
+            // No system bus (e.g. running outside a systemd session).
+            console.error(`TorShell: system bus unavailable: ${e.message}`);
+        }
     }
 
     _createProxy(objectPath, cancellable) {
@@ -142,24 +148,35 @@ export const TorService = GObject.registerClass({
         }
 
         const unitName = this._settings.get_string('tor-service');
+        const cancellable = new Gio.Cancellable();
+        this._actionCancellable = cancellable;
 
         try {
             this._proc = Gio.Subprocess.new(
                 [PKEXEC_PATH, SYSTEMCTL_PATH, verb, unitName],
                 Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE);
         } catch (e) {
+            this._actionCancellable = null;
             Main.notify('TorShell', _('Failed to run systemctl: %s').format(e.message));
             return false;
         }
 
-        this._proc.wait_check_async(null, (proc, result) => {
+        this._proc.wait_check_async(cancellable, (proc, result) => {
+            if (this._actionCancellable !== cancellable)
+                return;
+
+            this._actionCancellable = null;
+            this._proc = null;
+
             let succeeded = true;
             try {
                 proc.wait_check_finish(result);
-            } catch {
+            } catch (e) {
+                if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                    return;
                 succeeded = false;
             }
-            this._proc = null;
+
             if (succeeded) {
                 this._updateState();
             } else {
@@ -179,6 +196,9 @@ export const TorService = GObject.registerClass({
 
         this._cancellable?.cancel();
         this._cancellable = null;
+
+        this._actionCancellable?.cancel();
+        this._actionCancellable = null;
 
         this._destroyProxy();
 
