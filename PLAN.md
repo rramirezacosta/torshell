@@ -1,6 +1,6 @@
 # TorShell — Modernization & Improvement Plan
 
-Status: **phases 0–4 implemented** (CI and EGO publication intentionally not set up) · Target: GNOME Shell **45–51** (ESM) · Legacy: keep GNOME 40–44 on a maintenance branch
+Status: **phases 0–4 implemented; selected Phase 5 enhancements** (CI and EGO publication intentionally not set up) · Target: GNOME Shell **45–51** (ESM) · Legacy: keep GNOME 40–44 on a maintenance branch
 
 ---
 
@@ -195,13 +195,13 @@ Additional Phase 3 settings: `show-panel-button`, `panel-position` (`right`/`lef
 
 ---
 
-## 8. Phase 5 — Optional enhancements
+## 8. Phase 5 — Optional enhancements (in progress)
 
-- Tor bootstrap progress via the control port (9051) → show "Bootstrapping 45%".
-- Detect `tor@default` / user services automatically; per-service config.
-- "Disable proxy when tor stops" and "start tor on extension enable" toggles.
-- Keyboard shortcut via `addKeybinding` in prefs.
-- Clean/redraw the icons: strip Illustrator cruft (empty `<g>` groups, DOCTYPE) and confirm single-colour symbolic rendering.
+- [ ] Tor bootstrap progress via the control port (9051) → show "Bootstrapping 45%".
+- [ ] Detect `tor@default` / user services automatically; per-service config.
+- [x] "Disable proxy when tor stops" (`disable-proxy-on-stop`) and "start tor on extension enable" (`start-tor-on-enable`) toggles.
+- [ ] Keyboard shortcut via `addKeybinding` in prefs.
+- [ ] Clean/redraw the icons: strip Illustrator cruft (empty `<g>` groups, DOCTYPE) and confirm single-colour symbolic rendering.
 
 ---
 
@@ -213,6 +213,8 @@ Additional Phase 3 settings: `show-panel-button`, `panel-position` (`right`/`lef
 - [x] `make pack` includes `prefs.js`, all modules, `schemas/`, `locale/es/LC_MESSAGES/torshell.mo`, and icons.
 - [x] `install.sh` installs and enables from a local bundle, a `TORSSHELL_ZIP` override, and a downloaded release (with fakes).
 - [x] `uninstall.sh` disables/removes the extension, resets a Tor-shaped proxy, and removes the polkit rule (with fakes).
+- [x] `disable-proxy-on-stop` takes precedence over `restore-proxy` when Tor stops.
+- [ ] `start-tor-on-enable` starts Tor once after the initial systemd state is known.
 - [ ] Nested dev shell: `dbus-run-session gnome-shell --devkit --wayland` (49+).
 - [ ] Enable → extension appears, no errors in `journalctl -f -o cat /usr/bin/gnome-shell`.
 - [ ] Inactive → click → pkexec prompt → `active`; UI updates from D-Bus (no polling).

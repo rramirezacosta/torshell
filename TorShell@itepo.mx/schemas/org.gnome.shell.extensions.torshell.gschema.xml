@@ -33,6 +33,23 @@
         started. If disabled, the proxy mode is set to “none” when Tor stops.
       </description>
     </key>
+    <key name="disable-proxy-on-stop" type="b">
+      <default>false</default>
+      <summary>Disable the proxy when Tor stops</summary>
+      <description>
+        Set GNOME’s proxy mode to “none” when Tor stops, even if a previous
+        proxy configuration was saved. This takes precedence over restoring
+        the previous settings.
+      </description>
+    </key>
+    <key name="start-tor-on-enable" type="b">
+      <default>false</default>
+      <summary>Start Tor when the extension is enabled</summary>
+      <description>
+        Start the configured Tor unit when TorShell is enabled, but only if
+        Tor is not already running.
+      </description>
+    </key>
     <key name="notify-state-change" type="b">
       <default>false</default>
       <summary>Notify on state change</summary>

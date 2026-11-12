@@ -12,7 +12,11 @@ function assert(condition, message) {
         throw new Error(message);
 }
 
-function makeSettings({manageProxy = true, restoreProxy = true} = {}) {
+function makeSettings({
+    manageProxy = true,
+    restoreProxy = true,
+    disableProxyOnStop = false,
+} = {}) {
     return {
         get_uint: key => {
             assert(key === 'socks-port', `unexpected get_uint(${key})`);
@@ -23,6 +27,8 @@ function makeSettings({manageProxy = true, restoreProxy = true} = {}) {
                 return manageProxy;
             if (key === 'restore-proxy')
                 return restoreProxy;
+            if (key === 'disable-proxy-on-stop')
+                return disableProxyOnStop;
             throw new Error(`unexpected get_boolean(${key})`);
         },
     };
@@ -76,5 +82,17 @@ assert(proxy.get_string('mode') === 'manual', 'apply() did not set manual mode')
 noRestore.restore();
 assert(proxy.get_string('mode') === 'none',
     'restore-proxy=false did not disable the proxy');
+
+// “Disable the proxy when Tor stops” must win over restoring the snapshot.
+proxy.set_string('mode', 'auto');
+const disableOnStop = new ProxyManager(makeSettings({
+    restoreProxy: true,
+    disableProxyOnStop: true,
+}));
+disableOnStop.apply();
+assert(proxy.get_string('mode') === 'manual', 'apply() did not set manual mode');
+disableOnStop.restore();
+assert(proxy.get_string('mode') === 'none',
+    'disable-proxy-on-stop did not disable the proxy');
 
 print('proxy: OK');

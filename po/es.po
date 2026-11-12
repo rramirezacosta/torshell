@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TorShell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 02:09-0700\n"
-"PO-Revision-Date: 2026-11-11 02:35-0700\n"
+"POT-Creation-Date: 2026-11-11 17:10-0700\n"
+"PO-Revision-Date: 2026-11-11 17:28-0700\n"
 "Last-Translator: Rodolfo Ramírez Acosta "
 "<50764467+rramirezacosta@users.noreply.github.com>\n"
 "Language-Team: Spanish\n"
@@ -16,15 +16,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: TorShell@itepo.mx/extension.js:100
+#: TorShell@itepo.mx/extension.js:134
 msgid "The Tor service failed to start."
 msgstr "El servicio de Tor no se pudo iniciar."
 
-#: TorShell@itepo.mx/extension.js:103
+#: TorShell@itepo.mx/extension.js:137
 msgid "Tor is now active."
 msgstr "Tor está ahora activo."
 
-#: TorShell@itepo.mx/extension.js:105
+#: TorShell@itepo.mx/extension.js:139
 msgid "Tor is now inactive."
 msgstr "Tor está ahora inactivo."
 
@@ -102,23 +102,31 @@ msgstr ""
 msgid "Unit name"
 msgstr "Nombre de la unidad"
 
+#: TorShell@itepo.mx/prefs.js:31
+msgid "Start Tor when the extension is enabled"
+msgstr "Iniciar Tor al activar la extensión"
+
 #: TorShell@itepo.mx/prefs.js:33
+msgid "Only starts Tor if it is not already running."
+msgstr "Solo inicia Tor si no se está ejecutando ya."
+
+#: TorShell@itepo.mx/prefs.js:36
 msgid "Notifications"
 msgstr "Notificaciones"
 
-#: TorShell@itepo.mx/prefs.js:34
+#: TorShell@itepo.mx/prefs.js:37
 msgid "Notify when Tor starts or stops"
 msgstr "Notificar cuando Tor se inicie o se detenga"
 
-#: TorShell@itepo.mx/prefs.js:42
+#: TorShell@itepo.mx/prefs.js:45
 msgid "Proxy"
 msgstr "Proxy"
 
-#: TorShell@itepo.mx/prefs.js:46
+#: TorShell@itepo.mx/prefs.js:49
 msgid "GNOME proxy"
 msgstr "Proxy de GNOME"
 
-#: TorShell@itepo.mx/prefs.js:47
+#: TorShell@itepo.mx/prefs.js:50
 msgid ""
 "TorShell switches GNOME’s proxy settings while Tor is running. This affects "
 "GIO/libportal-aware applications, not every program."
@@ -127,71 +135,79 @@ msgstr ""
 "ejecución. Esto afecta a las aplicaciones que usan GIO/libportal, no a todos "
 "los programas."
 
-#: TorShell@itepo.mx/prefs.js:50
+#: TorShell@itepo.mx/prefs.js:53
 msgid "Manage the GNOME proxy automatically"
 msgstr "Gestionar el proxy de GNOME automáticamente"
 
-#: TorShell@itepo.mx/prefs.js:52
+#: TorShell@itepo.mx/prefs.js:55
 msgid "Restore the previous proxy settings"
 msgstr "Restaurar la configuración de proxy anterior"
 
-#: TorShell@itepo.mx/prefs.js:53
+#: TorShell@itepo.mx/prefs.js:56
 msgid "When disabled, the proxy mode is set to “none” when Tor stops."
 msgstr ""
 "Cuando está desactivado, el modo de proxy se establece en «ninguno» al "
 "detenerse Tor."
 
-#: TorShell@itepo.mx/prefs.js:57
+#: TorShell@itepo.mx/prefs.js:58
+msgid "Disable the proxy when Tor stops"
+msgstr "Desactivar el proxy cuando Tor se detenga"
+
+#: TorShell@itepo.mx/prefs.js:59
+msgid "Takes precedence over restoring the previous configuration."
+msgstr "Tiene prioridad sobre la restauración de la configuración anterior."
+
+#: TorShell@itepo.mx/prefs.js:65
 msgid "SOCKS port"
 msgstr "Puerto SOCKS"
 
-#: TorShell@itepo.mx/prefs.js:65
+#: TorShell@itepo.mx/prefs.js:73
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: TorShell@itepo.mx/prefs.js:69
+#: TorShell@itepo.mx/prefs.js:77
 msgid "Panel"
 msgstr "Panel"
 
-#: TorShell@itepo.mx/prefs.js:70
+#: TorShell@itepo.mx/prefs.js:78
 msgid "Show the top-bar button"
 msgstr "Mostrar el botón en la barra superior"
 
-#: TorShell@itepo.mx/prefs.js:71
+#: TorShell@itepo.mx/prefs.js:79
 msgid "Top-bar position"
 msgstr "Posición en la barra superior"
 
-#: TorShell@itepo.mx/prefs.js:72
+#: TorShell@itepo.mx/prefs.js:80
 msgid "Right"
 msgstr "Derecha"
 
-#: TorShell@itepo.mx/prefs.js:72
+#: TorShell@itepo.mx/prefs.js:80
 msgid "Left"
 msgstr "Izquierda"
 
-#: TorShell@itepo.mx/prefs.js:77
+#: TorShell@itepo.mx/prefs.js:85
 msgid "Quick Settings"
 msgstr "Ajustes rápidos"
 
-#: TorShell@itepo.mx/prefs.js:78
+#: TorShell@itepo.mx/prefs.js:86
 msgid "The Quick Settings toggle is an alternative to the top-bar button."
 msgstr ""
 "El conmutador de Ajustes rápidos es una alternativa al botón de la barra "
 "superior."
 
-#: TorShell@itepo.mx/prefs.js:79
+#: TorShell@itepo.mx/prefs.js:87
 msgid "Show the Quick Settings toggle"
 msgstr "Mostrar el conmutador en Ajustes rápidos"
 
-#: TorShell@itepo.mx/prefs.js:87
+#: TorShell@itepo.mx/prefs.js:95
 msgid "Tor control"
 msgstr "Control de Tor"
 
-#: TorShell@itepo.mx/prefs.js:91 TorShell@itepo.mx/prefs.js:93
+#: TorShell@itepo.mx/prefs.js:99 TorShell@itepo.mx/prefs.js:101
 msgid "Control port"
 msgstr "Puerto de control"
 
-#: TorShell@itepo.mx/prefs.js:92
+#: TorShell@itepo.mx/prefs.js:100
 msgid ""
 "Used by “New Tor identity”. Tor must have ControlPort enabled. TorShell "
 "tries the cookie file first, then the password below."
@@ -199,19 +215,19 @@ msgstr ""
 "Lo usa «Nueva identidad de Tor». Tor debe tener ControlPort habilitado. "
 "TorShell prueba primero el archivo de cookies y luego la contraseña de abajo."
 
-#: TorShell@itepo.mx/prefs.js:94
+#: TorShell@itepo.mx/prefs.js:102
 msgid "Cookie file"
 msgstr "Archivo de cookies"
 
-#: TorShell@itepo.mx/prefs.js:95
+#: TorShell@itepo.mx/prefs.js:103
 msgid "Control password"
 msgstr "Contraseña de control"
 
-#: TorShell@itepo.mx/prefs.js:98
+#: TorShell@itepo.mx/prefs.js:106
 msgid "Passwordless control"
 msgstr "Control sin contraseña"
 
-#: TorShell@itepo.mx/prefs.js:99
+#: TorShell@itepo.mx/prefs.js:107
 msgid ""
 "By default, starting and stopping Tor asks for your password. Installing a "
 "polkit rule lets users in the wheel or sudo groups manage the configured Tor "
@@ -221,15 +237,15 @@ msgstr ""
 "Instalar una regla de polkit permite a los usuarios de los grupos wheel o "
 "sudo gestionar la unidad de Tor configurada sin un aviso."
 
-#: TorShell@itepo.mx/prefs.js:191
+#: TorShell@itepo.mx/prefs.js:199
 msgid "Allow passwordless start/stop"
 msgstr "Permitir iniciar/detener sin contraseña"
 
-#: TorShell@itepo.mx/prefs.js:192 TorShell@itepo.mx/prefs.js:214
+#: TorShell@itepo.mx/prefs.js:200 TorShell@itepo.mx/prefs.js:222
 msgid "Applies to the configured Tor unit only."
 msgstr "Se aplica solo a la unidad de Tor configurada."
 
-#: TorShell@itepo.mx/prefs.js:215
+#: TorShell@itepo.mx/prefs.js:223
 msgid "Could not update the polkit rule."
 msgstr "No se pudo actualizar la regla de polkit."
 

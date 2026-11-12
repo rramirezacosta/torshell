@@ -28,6 +28,9 @@ export default class TorShellPreferences extends ExtensionPreferences {
         const service = this._group(_('Tor service'),
             _('systemd unit that runs the Tor daemon, for example tor.service or tor@default.service.'));
         this._entry(service, _('Unit name'), 'tor-service');
+        this._switch(service, _('Start Tor when the extension is enabled'),
+            'start-tor-on-enable',
+            _('Only starts Tor if it is not already running.'));
         page.add(service);
 
         const notifications = this._group(_('Notifications'));
@@ -51,7 +54,12 @@ export default class TorShellPreferences extends ExtensionPreferences {
         const restore = this._switch(group,
             _('Restore the previous proxy settings'), 'restore-proxy',
             _('When disabled, the proxy mode is set to “none” when Tor stops.'));
+        const disableOnStop = this._switch(group,
+            _('Disable the proxy when Tor stops'), 'disable-proxy-on-stop',
+            _('Takes precedence over restoring the previous configuration.'));
         manage.bind_property('active', restore, 'sensitive',
+            GObject.BindingFlags.SYNC_CREATE);
+        manage.bind_property('active', disableOnStop, 'sensitive',
             GObject.BindingFlags.SYNC_CREATE);
 
         this._spin(group, _('SOCKS port'), 'socks-port', 1, 65535);

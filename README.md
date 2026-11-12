@@ -19,6 +19,8 @@ the top bar and points GNOME's proxy settings at Tor while it is running.
   polling or synchronous subprocesses.
 - Non-destructive proxy handling: the previous GNOME proxy configuration is
   snapshotted and restored when Tor stops or the extension is disabled.
+- Optional auto-start of Tor when the extension is enabled, and an option to
+  force the proxy off when Tor stops.
 - Spanish translation (`es`).
 
 ## Requirements
@@ -117,9 +119,11 @@ All settings are stored in GSettings under
 | Key | Default | Description |
 |-----|---------|-------------|
 | `tor-service` | `tor.service` | systemd unit that runs Tor. |
+| `start-tor-on-enable` | `false` | Start Tor when the extension is enabled, if it is not already running. |
 | `socks-port` | `9050` | Tor SOCKS port on localhost. |
 | `manage-proxy` | `true` | Apply GNOME proxy settings while Tor is active. |
 | `restore-proxy` | `true` | Restore the previous proxy when Tor stops. If disabled, the proxy mode is set to `none`. |
+| `disable-proxy-on-stop` | `false` | Set the proxy mode to `none` when Tor stops, even if a previous configuration was saved. Takes precedence over `restore-proxy`. |
 | `notify-state-change` | `false` | Show a notification when Tor starts or stops. |
 | `show-panel-button` | `true` | Show the top-bar button. |
 | `panel-position` | `right` | Put the button on the right or left side of the top bar. |
@@ -144,6 +148,10 @@ gsettings set org.gnome.system.proxy.socks port '<socks-port>'
 It also adds `localhost`, `127.0.0.0/8`, and `::1` to the proxy ignore list. The
 previous values are restored when Tor stops, when `manage-proxy` is turned off,
 or when the extension is disabled.
+
+Enable **Disable the proxy when Tor stops** (`disable-proxy-on-stop`) to set the
+mode to `none` on stop even when a previous configuration was saved. It takes
+precedence over `restore-proxy`.
 
 GNOME's proxy settings are honoured by GIO/libportal-aware applications, not by
 every program. Applications with their own proxy configuration (for example

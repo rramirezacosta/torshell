@@ -1,3 +1,5 @@
+import GLib from 'gi://GLib';
+
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
@@ -7,12 +9,16 @@ import {ProxyManager} from './proxy.js';
 import {TorIndicator} from './indicator.js';
 import {TorQuickToggle} from './quickToggle.js';
 
+const START_ON_ENABLE_TIMEOUT_SECONDS = 10;
+
 export default class TorShellExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
         this._proxy = new ProxyManager(this._settings);
         this._control = new TorControl(this._settings);
         this._service = new TorService(this._settings);
+        this._startOnEnablePending = false;
+        this._startOnEnableTimeoutId = 0;
 
         this._stateChangedId = this._service.connect('state-changed',
             (_service, state) => this._onStateChanged(state));
@@ -24,11 +30,25 @@ export default class TorShellExtension extends Extension {
         this._buildIndicator();
         this._buildQuickToggle();
 
+        // Start Tor once, after the initial systemd state is known, so we do
+        // not prompt for authentication when Tor is already running.
+        this._startOnEnablePending = this._settings.get_boolean('start-tor-on-enable');
+        if (this._startOnEnablePending) {
+            this._startOnEnableTimeoutId = GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT, START_ON_ENABLE_TIMEOUT_SECONDS, () => {
+                    this._startOnEnableTimeoutId = 0;
+                    this._startOnEnablePending = false;
+                    return GLib.SOURCE_REMOVE;
+                });
+        }
+
         this._service.start();
         this._syncUi();
     }
 
     disable() {
+        this._clearStartOnEnablePending();
+
         this._settings.disconnect(this._settingsChangedId);
         this._settingsChangedId = 0;
 
@@ -92,11 +112,26 @@ export default class TorShellExtension extends Extension {
         this._quickToggle?.sync(this._service.state);
     }
 
+    _clearStartOnEnablePending() {
+        this._startOnEnablePending = false;
+        if (this._startOnEnableTimeoutId) {
+            GLib.source_remove(this._startOnEnableTimeoutId);
+            this._startOnEnableTimeoutId = 0;
+        }
+    }
+
     _onStateChanged(state) {
+        const startingOnEnable = this._startOnEnablePending && state !== 'unknown';
+        if (startingOnEnable) {
+            this._clearStartOnEnablePending();
+            if (state === 'inactive' || state === 'failed')
+                this._service.setEnabled(true);
+        }
+
         this._syncProxy(state);
         this._syncUi();
 
-        if (state === 'failed') {
+        if (state === 'failed' && !startingOnEnable) {
             Main.notify('TorShell', _('The Tor service failed to start.'));
         } else if (this._settings.get_boolean('notify-state-change')) {
             if (state === 'active')

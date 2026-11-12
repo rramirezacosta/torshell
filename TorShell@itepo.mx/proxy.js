@@ -42,7 +42,11 @@ export class ProxyManager {
         const saved = this._saved;
         this._saved = null;
 
-        if (this._settings.get_boolean('restore-proxy')) {
+        // The explicit “disable on stop” option wins over restoring the
+        // snapshot; otherwise fall back to the previous configuration, or to
+        // “none” when restoring is disabled.
+        if (!this._settings.get_boolean('disable-proxy-on-stop') &&
+            this._settings.get_boolean('restore-proxy')) {
             this._proxy.set_string('mode', saved.mode);
             this._socks.set_string('host', saved.socksHost);
             this._socks.set_int('port', saved.socksPort);
