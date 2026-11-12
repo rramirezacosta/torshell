@@ -1,6 +1,6 @@
 # TorShell — Modernization & Improvement Plan
 
-Status: **phases 0–2 implemented** · Target: GNOME Shell **45–51** (ESM) · Legacy: keep GNOME 40–44 on a maintenance branch
+Status: **phases 0–3 implemented** · Target: GNOME Shell **45–51** (ESM) · Legacy: keep GNOME 40–44 on a maintenance branch
 
 ---
 
@@ -170,13 +170,15 @@ proxy.connect('g-properties-changed', () => this._syncState());
 
 ## 6. Phase 3 — UX & features (~2–3 days)
 
-- **Top-bar indicator** (`PanelMenu.Button`, `style_class: 'panel-button'`), `addToStatusArea()` instead of `_rightBox`.
-- **Popup menu** with: on/off toggle + status line (`Active since …` / `Inactive`), **New Tor identity** (control-port `SIGNAL NEWNYM`, only if `ControlPort` is enabled), **Check connection** (opens `check.torproject.org`), separator, **Preferences**.
-- **Optional Quick Settings toggle** (`QuickSettings.QuickToggle` added via `Main.panel.statusArea.quickSettings.addExternalIndicator`) — behind a setting, since the top-bar icon is the extension's identity.
-- **Preferences window** (`prefs.js`, Adw/Gtk, separate process): SOCKS port, tor service name, "manage GNOME proxy automatically", "restore previous proxy", "show panel button"/position, "notify on state change", "install no-password polkit rule".
-- **GSettings schema** `org.gnome.shell.extensions.torshell` (base id/path per EGO rules, shipped as `<schema-id>.gschema.xml`).
-- **i18n**: `gettext-domain: torshell`; ship `en` + `es` catalogs, extraction in the Makefile.
-- **Notifications** on failure/state change (replace the current `Main.notify` hack, remove the broken `res`/`Exception` globals).
+- [x] **Top-bar indicator** (`PanelMenu.Button`, `style_class: 'panel-button'`), `addToStatusArea()` instead of `_rightBox`.
+- [x] **Popup menu** with: on/off toggle + status line (`Active since …` / `Inactive`), **New Tor identity** (control-port `SIGNAL NEWNYM`, only if `ControlPort` is enabled), **Check connection** (opens `check.torproject.org`), separator, **Preferences**.
+- [x] **Optional Quick Settings toggle** (`QuickSettings.QuickToggle` added via `Main.panel.statusArea.quickSettings.addExternalIndicator`) — behind a setting, since the top-bar icon is the extension's identity.
+- [x] **Preferences window** (`prefs.js`, Adw/Gtk, separate process): SOCKS port, tor service name, "manage GNOME proxy automatically", "restore previous proxy", "show panel button"/position, "notify on state change", "install no-password polkit rule".
+- [x] **GSettings schema** `org.gnome.shell.extensions.torshell` (base id/path per EGO rules, shipped as `<schema-id>.gschema.xml`).
+- [x] **i18n**: `gettext-domain: torshell`; ship `en` + `es` catalogs, extraction in the Makefile.
+- [x] **Notifications** on failure/state change (replace the current `Main.notify` hack, remove the broken `res`/`Exception` globals).
+
+Additional Phase 3 settings: `show-panel-button`, `panel-position` (`right`/`left`), `show-quick-toggle`, `control-port`, `control-password`, `control-cookie-path`. The control-port client tries the cookie file first, then the password, then no authentication, and only shows **New Tor identity** when Tor answers `PROTOCOLINFO`. The optional polkit rule is written to `/etc/polkit-1/rules.d/50-torshell.rules` and only covers start/stop of the configured unit for local, active `wheel`/`sudo` users.
 
 ---
 
@@ -205,7 +207,9 @@ proxy.connect('g-properties-changed', () => this._syncState());
 ## 9. Testing checklist
 
 - [x] `npm run lint` passes.
-- [x] `make test` passes (proxy apply/restore round-trip, systemd D-Bus watcher).
+- [x] `make test` passes (proxy apply/restore round-trip, systemd D-Bus watcher, polkit rule escaping).
+- [x] `make check-po` passes; `po/es.po` has no untranslated or fuzzy messages.
+- [x] `make pack` includes `prefs.js`, all modules, `schemas/`, `locale/es/LC_MESSAGES/torshell.mo`, and icons.
 - [ ] Nested dev shell: `dbus-run-session gnome-shell --devkit --wayland` (49+).
 - [ ] Enable → extension appears, no errors in `journalctl -f -o cat /usr/bin/gnome-shell`.
 - [ ] Inactive → click → pkexec prompt → `active`; UI updates from D-Bus (no polling).
@@ -214,6 +218,9 @@ proxy.connect('g-properties-changed', () => this._syncState());
 - [ ] `disable()`/`enable()` repeatedly → no leaked signals, timeouts, or widgets.
 - [ ] Lock/unlock session; multi-monitor; light/dark theme icons.
 - [ ] Config changes in prefs apply live.
+- [ ] New Tor identity works with cookie and password authentication.
+- [ ] Quick Settings toggle starts/stops Tor and stays in sync with the panel button.
+- [ ] Polkit rule install/remove prompts once and updates the switch state.
 
 ---
 

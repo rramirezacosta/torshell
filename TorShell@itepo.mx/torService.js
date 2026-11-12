@@ -9,6 +9,7 @@ const SYSTEMD_BUS_NAME = 'org.freedesktop.systemd1';
 const SYSTEMD_ROOT_PATH = '/org/freedesktop/systemd1';
 const MANAGER_INTERFACE = 'org.freedesktop.systemd1.Manager';
 const UNIT_INTERFACE = 'org.freedesktop.systemd1.Unit';
+const JOB_MODE = 'replace';
 
 const PKEXEC_PATH = GLib.find_program_in_path('pkexec');
 const SYSTEMCTL_PATH = GLib.find_program_in_path('systemctl');
@@ -28,11 +29,24 @@ export const TorService = GObject.registerClass({
         this._cancellable = null;
         this._proc = null;
         this._actionCancellable = null;
+        this._actionPending = false;
         this._settingsId = 0;
     }
 
     get state() {
         return this._state;
+    }
+
+    get activeSince() {
+        const variant = this._proxy?.get_cached_property('ActiveEnterTimestamp');
+        if (!variant)
+            return null;
+
+        const usec = Number(variant.unpack());
+        if (!Number.isFinite(usec) || usec <= 0)
+            return null;
+
+        return new Date(usec / 1000);
     }
 
     start() {
@@ -42,7 +56,7 @@ export const TorService = GObject.registerClass({
     }
 
     setEnabled(enabled) {
-        return this._runSystemctl(enabled ? 'start' : 'stop');
+        return this._runAction(enabled ? 'start' : 'stop');
     }
 
     _watchUnit() {
@@ -138,7 +152,57 @@ export const TorService = GObject.registerClass({
         this.emit('state-changed', state);
     }
 
-    _runSystemctl(verb) {
+    _runAction(verb) {
+        if (this._proc || this._actionPending)
+            return false;
+
+        const unitName = this._settings.get_string('tor-service');
+        const method = verb === 'start' ? 'StartUnit' : 'StopUnit';
+        const cancellable = new Gio.Cancellable();
+        this._actionCancellable = cancellable;
+        this._actionPending = true;
+
+        // Ask systemd directly first. With a polkit rule in place this needs
+        // no password at all; otherwise it is denied and we fall back to
+        // pkexec, which shows the usual authentication dialog.
+        try {
+            Gio.DBus.system.call(
+                SYSTEMD_BUS_NAME,
+                SYSTEMD_ROOT_PATH,
+                MANAGER_INTERFACE,
+                method,
+                new GLib.Variant('(ss)', [unitName, JOB_MODE]),
+                new GLib.VariantType('(o)'),
+                Gio.DBusCallFlags.NONE,
+                -1,
+                cancellable,
+                (_connection, result) => {
+                    if (this._actionCancellable !== cancellable)
+                        return;
+
+                    this._actionCancellable = null;
+                    this._actionPending = false;
+
+                    try {
+                        _connection.call_finish(result);
+                    } catch (e) {
+                        if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                            return;
+                        if (!this._runPkexec(verb))
+                            this.emit('action-failed');
+                    }
+                });
+        } catch {
+            this._actionCancellable = null;
+            this._actionPending = false;
+            if (!this._runPkexec(verb))
+                this.emit('action-failed');
+        }
+
+        return true;
+    }
+
+    _runPkexec(verb) {
         if (this._proc)
             return false;
 
@@ -180,7 +244,9 @@ export const TorService = GObject.registerClass({
             if (succeeded) {
                 this._updateState();
             } else {
-                Main.notify('TorShell', _('Could not %s the Tor service.').format(verb));
+                Main.notify('TorShell', verb === 'start'
+                    ? _('Could not start the Tor service.')
+                    : _('Could not stop the Tor service.'));
                 this.emit('action-failed');
             }
         });
@@ -199,6 +265,7 @@ export const TorService = GObject.registerClass({
 
         this._actionCancellable?.cancel();
         this._actionCancellable = null;
+        this._actionPending = false;
 
         this._destroyProxy();
 

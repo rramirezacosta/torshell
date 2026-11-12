@@ -1,0 +1,271 @@
+# Spanish translation for TorShell.
+# This file is distributed under the same license as the TorShell package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: TorShell\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-11 02:09-0700\n"
+"PO-Revision-Date: 2026-11-11 02:35-0700\n"
+"Last-Translator: Rodolfo Ramírez Acosta "
+"<50764467+rramirezacosta@users.noreply.github.com>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: TorShell@itepo.mx/extension.js:100
+msgid "The Tor service failed to start."
+msgstr "El servicio de Tor no se pudo iniciar."
+
+#: TorShell@itepo.mx/extension.js:103
+msgid "Tor is now active."
+msgstr "Tor está ahora activo."
+
+#: TorShell@itepo.mx/extension.js:105
+msgid "Tor is now inactive."
+msgstr "Tor está ahora inactivo."
+
+#: TorShell@itepo.mx/indicator.js:38 TorShell@itepo.mx/quickToggle.js:19
+msgid "Tor"
+msgstr "Tor"
+
+#: TorShell@itepo.mx/indicator.js:44
+msgid "New Tor identity"
+msgstr "Nueva identidad de Tor"
+
+#: TorShell@itepo.mx/indicator.js:49
+msgid "Check connection"
+msgstr "Comprobar la conexión"
+
+#: TorShell@itepo.mx/indicator.js:55
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: TorShell@itepo.mx/indicator.js:96
+#, javascript-format
+msgid "Active since %s"
+msgstr "Activo desde %s"
+
+#: TorShell@itepo.mx/indicator.js:97 TorShell@itepo.mx/quickToggle.js:46
+msgid "Active"
+msgstr "Activo"
+
+#: TorShell@itepo.mx/indicator.js:100 TorShell@itepo.mx/quickToggle.js:48
+msgid "Starting…"
+msgstr "Iniciando…"
+
+#: TorShell@itepo.mx/indicator.js:102 TorShell@itepo.mx/quickToggle.js:50
+msgid "Stopping…"
+msgstr "Deteniendo…"
+
+#: TorShell@itepo.mx/indicator.js:104 TorShell@itepo.mx/quickToggle.js:52
+msgid "Inactive"
+msgstr "Inactivo"
+
+#: TorShell@itepo.mx/indicator.js:106 TorShell@itepo.mx/quickToggle.js:54
+msgid "Failed"
+msgstr "Falló"
+
+#: TorShell@itepo.mx/indicator.js:108 TorShell@itepo.mx/quickToggle.js:56
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: TorShell@itepo.mx/indicator.js:159
+msgid "Requested a new Tor identity."
+msgstr "Se solicitó una nueva identidad de Tor."
+
+#: TorShell@itepo.mx/indicator.js:163
+#, javascript-format
+msgid "Could not request a new Tor identity: %s"
+msgstr "No se pudo solicitar una nueva identidad de Tor: %s"
+
+#: TorShell@itepo.mx/prefs.js:24
+msgid "General"
+msgstr "General"
+
+#: TorShell@itepo.mx/prefs.js:28
+msgid "Tor service"
+msgstr "Servicio de Tor"
+
+#: TorShell@itepo.mx/prefs.js:29
+msgid ""
+"systemd unit that runs the Tor daemon, for example tor.service or "
+"tor@default.service."
+msgstr ""
+"Unidad de systemd que ejecuta el demonio de Tor, por ejemplo tor.service o "
+"tor@default.service."
+
+#: TorShell@itepo.mx/prefs.js:30
+msgid "Unit name"
+msgstr "Nombre de la unidad"
+
+#: TorShell@itepo.mx/prefs.js:33
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#: TorShell@itepo.mx/prefs.js:34
+msgid "Notify when Tor starts or stops"
+msgstr "Notificar cuando Tor se inicie o se detenga"
+
+#: TorShell@itepo.mx/prefs.js:42
+msgid "Proxy"
+msgstr "Proxy"
+
+#: TorShell@itepo.mx/prefs.js:46
+msgid "GNOME proxy"
+msgstr "Proxy de GNOME"
+
+#: TorShell@itepo.mx/prefs.js:47
+msgid ""
+"TorShell switches GNOME’s proxy settings while Tor is running. This affects "
+"GIO/libportal-aware applications, not every program."
+msgstr ""
+"TorShell cambia la configuración de proxy de GNOME mientras Tor está en "
+"ejecución. Esto afecta a las aplicaciones que usan GIO/libportal, no a todos "
+"los programas."
+
+#: TorShell@itepo.mx/prefs.js:50
+msgid "Manage the GNOME proxy automatically"
+msgstr "Gestionar el proxy de GNOME automáticamente"
+
+#: TorShell@itepo.mx/prefs.js:52
+msgid "Restore the previous proxy settings"
+msgstr "Restaurar la configuración de proxy anterior"
+
+#: TorShell@itepo.mx/prefs.js:53
+msgid "When disabled, the proxy mode is set to “none” when Tor stops."
+msgstr ""
+"Cuando está desactivado, el modo de proxy se establece en «ninguno» al "
+"detenerse Tor."
+
+#: TorShell@itepo.mx/prefs.js:57
+msgid "SOCKS port"
+msgstr "Puerto SOCKS"
+
+#: TorShell@itepo.mx/prefs.js:65
+msgid "Appearance"
+msgstr "Apariencia"
+
+#: TorShell@itepo.mx/prefs.js:69
+msgid "Panel"
+msgstr "Panel"
+
+#: TorShell@itepo.mx/prefs.js:70
+msgid "Show the top-bar button"
+msgstr "Mostrar el botón en la barra superior"
+
+#: TorShell@itepo.mx/prefs.js:71
+msgid "Top-bar position"
+msgstr "Posición en la barra superior"
+
+#: TorShell@itepo.mx/prefs.js:72
+msgid "Right"
+msgstr "Derecha"
+
+#: TorShell@itepo.mx/prefs.js:72
+msgid "Left"
+msgstr "Izquierda"
+
+#: TorShell@itepo.mx/prefs.js:77
+msgid "Quick Settings"
+msgstr "Ajustes rápidos"
+
+#: TorShell@itepo.mx/prefs.js:78
+msgid "The Quick Settings toggle is an alternative to the top-bar button."
+msgstr ""
+"El conmutador de Ajustes rápidos es una alternativa al botón de la barra "
+"superior."
+
+#: TorShell@itepo.mx/prefs.js:79
+msgid "Show the Quick Settings toggle"
+msgstr "Mostrar el conmutador en Ajustes rápidos"
+
+#: TorShell@itepo.mx/prefs.js:87
+msgid "Tor control"
+msgstr "Control de Tor"
+
+#: TorShell@itepo.mx/prefs.js:91 TorShell@itepo.mx/prefs.js:93
+msgid "Control port"
+msgstr "Puerto de control"
+
+#: TorShell@itepo.mx/prefs.js:92
+msgid ""
+"Used by “New Tor identity”. Tor must have ControlPort enabled. TorShell "
+"tries the cookie file first, then the password below."
+msgstr ""
+"Lo usa «Nueva identidad de Tor». Tor debe tener ControlPort habilitado. "
+"TorShell prueba primero el archivo de cookies y luego la contraseña de abajo."
+
+#: TorShell@itepo.mx/prefs.js:94
+msgid "Cookie file"
+msgstr "Archivo de cookies"
+
+#: TorShell@itepo.mx/prefs.js:95
+msgid "Control password"
+msgstr "Contraseña de control"
+
+#: TorShell@itepo.mx/prefs.js:98
+msgid "Passwordless control"
+msgstr "Control sin contraseña"
+
+#: TorShell@itepo.mx/prefs.js:99
+msgid ""
+"By default, starting and stopping Tor asks for your password. Installing a "
+"polkit rule lets users in the wheel or sudo groups manage the configured Tor "
+"unit without a prompt."
+msgstr ""
+"De forma predeterminada, iniciar y detener Tor solicita tu contraseña. "
+"Instalar una regla de polkit permite a los usuarios de los grupos wheel o "
+"sudo gestionar la unidad de Tor configurada sin un aviso."
+
+#: TorShell@itepo.mx/prefs.js:191
+msgid "Allow passwordless start/stop"
+msgstr "Permitir iniciar/detener sin contraseña"
+
+#: TorShell@itepo.mx/prefs.js:192 TorShell@itepo.mx/prefs.js:214
+msgid "Applies to the configured Tor unit only."
+msgstr "Se aplica solo a la unidad de Tor configurada."
+
+#: TorShell@itepo.mx/prefs.js:215
+msgid "Could not update the polkit rule."
+msgstr "No se pudo actualizar la regla de polkit."
+
+#: TorShell@itepo.mx/torControl.js:66
+msgid "Timed out waiting for the Tor control port."
+msgstr "Se agotó el tiempo de espera del puerto de control de Tor."
+
+#: TorShell@itepo.mx/torControl.js:67
+msgid "The Tor control request was cancelled."
+msgstr "Se canceló la solicitud de control de Tor."
+
+#: TorShell@itepo.mx/torControl.js:131
+msgid "Tor authentication failed."
+msgstr "La autenticación con Tor falló."
+
+#: TorShell@itepo.mx/torControl.js:149
+msgid "Tor rejected the command."
+msgstr "Tor rechazó el comando."
+
+#: TorShell@itepo.mx/torControl.js:159
+msgid "Tor closed the control connection."
+msgstr "Tor cerró la conexión de control."
+
+#: TorShell@itepo.mx/torService.js:210
+msgid "pkexec or systemctl could not be found."
+msgstr "No se encontró pkexec o systemctl."
+
+#: TorShell@itepo.mx/torService.js:224
+#, javascript-format
+msgid "Failed to run systemctl: %s"
+msgstr "No se pudo ejecutar systemctl: %s"
+
+#: TorShell@itepo.mx/torService.js:248
+msgid "Could not start the Tor service."
+msgstr "No se pudo iniciar el servicio de Tor."
+
+#: TorShell@itepo.mx/torService.js:249
+msgid "Could not stop the Tor service."
+msgstr "No se pudo detener el servicio de Tor."

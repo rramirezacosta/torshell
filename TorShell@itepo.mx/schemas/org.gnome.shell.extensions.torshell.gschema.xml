@@ -40,5 +40,55 @@
         Show a desktop notification when the Tor daemon starts or stops.
       </description>
     </key>
+    <key name="show-panel-button" type="b">
+      <default>true</default>
+      <summary>Show the panel button</summary>
+      <description>
+        Show the TorShell icon in the top bar.
+      </description>
+    </key>
+    <key name="panel-position" type="s">
+      <choices>
+        <choice value="right"/>
+        <choice value="left"/>
+      </choices>
+      <default>'right'</default>
+      <summary>Panel button position</summary>
+      <description>
+        Side of the top bar where the TorShell icon is placed.
+      </description>
+    </key>
+    <key name="show-quick-toggle" type="b">
+      <default>false</default>
+      <summary>Show the Quick Settings toggle</summary>
+      <description>
+        Add a Tor toggle to the Quick Settings menu in the system status area.
+      </description>
+    </key>
+    <key name="control-port" type="u">
+      <default>9051</default>
+      <summary>Tor control port</summary>
+      <description>
+        Port on which Tor exposes its control interface on localhost. Used by
+        the “New Tor identity” action; Tor must have ControlPort enabled.
+      </description>
+    </key>
+    <key name="control-password" type="s">
+      <default>''</default>
+      <summary>Tor control password</summary>
+      <description>
+        Password for the Tor control port. Cookie authentication is tried
+        first; this password is used when the cookie cannot be read or is
+        rejected.
+      </description>
+    </key>
+    <key name="control-cookie-path" type="s">
+      <default>'/run/tor/control.authcookie'</default>
+      <summary>Tor control cookie</summary>
+      <description>
+        Path to Tor’s control authentication cookie. Leave empty to skip
+        cookie authentication.
+      </description>
+    </key>
   </schema>
 </schemalist>
