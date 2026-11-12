@@ -2,7 +2,7 @@ UUID := TorShell@itepo.mx
 POT := po/torshell.pot
 PO_FILES := $(wildcard po/*.po)
 
-.PHONY: all schemas lint pot update-po check-po test pack clean
+.PHONY: all schemas lint pot update-po check-po test test-scripts install uninstall pack clean
 
 all: schemas
 
@@ -23,10 +23,19 @@ update-po: pot
 check-po:
 	@for po in $(PO_FILES); do msgfmt --check -o /dev/null $$po; done
 
-test: check-po
+test: check-po test-scripts
 	GSETTINGS_BACKEND=memory gjs -m tests/test-proxy.js
 	gjs -m tests/test-systemd.js
 	gjs -m tests/test-polkit-rule.js
+
+test-scripts:
+	bash tests/test-scripts.sh
+
+install: pack
+	bash ./install.sh
+
+uninstall:
+	bash ./uninstall.sh
 
 pack: schemas
 	gnome-extensions pack --force \

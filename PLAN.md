@@ -1,6 +1,6 @@
 # TorShell — Modernization & Improvement Plan
 
-Status: **phases 0–3 implemented** · Target: GNOME Shell **45–51** (ESM) · Legacy: keep GNOME 40–44 on a maintenance branch
+Status: **phases 0–4 implemented** (CI and EGO publication intentionally not set up) · Target: GNOME Shell **45–51** (ESM) · Legacy: keep GNOME 40–44 on a maintenance branch
 
 ---
 
@@ -42,7 +42,7 @@ Status: **phases 0–3 implemented** · Target: GNOME Shell **45–51** (ESM) ·
 - [x] Create branch `legacy/gnome-44` from current `master` (frozen, bug-fix only).
 - [x] Add `.gitignore` (`*.zip`, `build/`, `po/*.mo`, `.eslintcache`).
 - [x] Add `eslint` + GNOME Shell's lint config (gjs) and an `npm run lint` script.
-- [ ] Move legacy `install.sh`/`uninstall.sh` to the legacy branch; rewrite for `master` in Phase 4.
+- [x] Move legacy `install.sh`/`uninstall.sh` to the legacy branch; rewrite for `master` in Phase 4.
 - [ ] Tag the last legacy commit (e.g. `v1.0.0-gnome44`).
 
 ---
@@ -184,13 +184,14 @@ Additional Phase 3 settings: `show-panel-button`, `panel-position` (`right`/`lef
 
 ## 7. Phase 4 — Packaging & distribution (~1 day)
 
-- **Build**: `Makefile`/`justfile` with
-  `gnome-extensions pack --force --podir=po --schema=schemas/org.gnome.shell.extensions.torshell.gschema.xml TorShell@itepo.mx`.
-- **Rewrite `install.sh`**: `set -euo pipefail`, download the release zip, `gnome-extensions install --force`, `gnome-extensions enable`, then instruct to log out/in (Wayland can't hot-restart the Shell). Remove the fragile `dconf` string manipulation.
-- **Rewrite `uninstall.sh`**: `gnome-extensions disable`, remove the directory, reset proxy.
-- **CI (GitHub Actions)**: `eslint` + `gjs -m` syntax check + `gnome-extensions pack` on every push; attach the zip to tagged releases; optionally `gnome-extensions upload --accept-tos` (secret-based) to publish to EGO.
-- **Publish to extensions.gnome.org** for GNOME 45–51; upload the legacy branch package for ≤44 (EGO supports multi-version).
-- Update `README.md`: prerequisites, install via EGO **and** script, screenshots of the new menu/prefs, proxy-limitations note, troubleshooting (`journalctl /usr/bin/gnome-shell`).
+- [x] **Build**: `make pack` runs `gnome-extensions pack --force --podir=po --schema=schemas/org.gnome.shell.extensions.torshell.gschema.xml TorShell@itepo.mx` and includes every runtime module and the icons.
+- [x] **Rewrite `install.sh`**: `set -euo pipefail`, non-root check, local-bundle detection, `TORSSHELL_ZIP` override, latest-release download with `curl`/`wget`, `gnome-extensions install --force`, graceful `gnome-extensions enable`, and Wayland/X11 reload instructions. The fragile `dconf` string manipulation is gone.
+- [x] **Rewrite `uninstall.sh`**: `gnome-extensions disable`/`uninstall`, directory-removal fallback, cautious proxy reset when the configuration still looks like TorShell's, and optional removal of the polkit rule via `pkexec`.
+- [x] **Script tests**: `tests/test-scripts.sh` uses fake `gnome-extensions`, `gsettings`, `pkexec`, and `curl` commands to cover local/override/download installs, uninstall, proxy-reset conditions, polkit cleanup, and idempotency.
+- [x] **Make targets**: `make install`, `make uninstall`, and `make test-scripts`; `make test` runs the script tests too.
+- [x] **README**: prerequisites, checkout/release/manual installation, usage, settings, proxy limitations, optional polkit rule, troubleshooting, uninstall, and development commands.
+- [ ] **CI (GitHub Actions)**: intentionally deferred; not part of the current phase.
+- [ ] **Publish to extensions.gnome.org**: intentionally deferred; not part of the current phase.
 
 ---
 
@@ -207,9 +208,11 @@ Additional Phase 3 settings: `show-panel-button`, `panel-position` (`right`/`lef
 ## 9. Testing checklist
 
 - [x] `npm run lint` passes.
-- [x] `make test` passes (proxy apply/restore round-trip, systemd D-Bus watcher, polkit rule escaping).
+- [x] `make test` passes (proxy apply/restore round-trip, systemd D-Bus watcher, polkit rule escaping, install/uninstall scripts).
 - [x] `make check-po` passes; `po/es.po` has no untranslated or fuzzy messages.
 - [x] `make pack` includes `prefs.js`, all modules, `schemas/`, `locale/es/LC_MESSAGES/torshell.mo`, and icons.
+- [x] `install.sh` installs and enables from a local bundle, a `TORSSHELL_ZIP` override, and a downloaded release (with fakes).
+- [x] `uninstall.sh` disables/removes the extension, resets a Tor-shaped proxy, and removes the polkit rule (with fakes).
 - [ ] Nested dev shell: `dbus-run-session gnome-shell --devkit --wayland` (49+).
 - [ ] Enable → extension appears, no errors in `journalctl -f -o cat /usr/bin/gnome-shell`.
 - [ ] Inactive → click → pkexec prompt → `active`; UI updates from D-Bus (no polling).
@@ -222,14 +225,17 @@ Additional Phase 3 settings: `show-panel-button`, `panel-position` (`right`/`lef
 - [ ] Quick Settings toggle starts/stops Tor and stays in sync with the panel button.
 - [ ] Polkit rule install/remove prompts once and updates the switch state.
 
+> The live-session checks above and screenshots of the new menu/preferences still
+> require a running GNOME Shell session.
+
 ---
 
-## 10. Open decisions (please confirm)
+## 10. Decisions
 
-1. **Version scope** — port to 45–51 only and freeze ≤44 on a legacy branch? *(recommended)*
-2. **UI** — keep the top-bar button as primary and add Quick Settings as an option? *(recommended)*
-3. **Privileges** — keep the `pkexec` password prompt, or ship an opt-in no-password polkit rule? *(recommended: keep pkexec by default, offer the rule)*
-4. **Distribution** — publish to extensions.gnome.org, or keep install-script only?
+1. **Version scope** — port to 45–51 only; GNOME 40–44 is frozen on `legacy/gnome-44`. *(implemented)*
+2. **UI** — top-bar button as primary, Quick Settings as an option. *(implemented)*
+3. **Privileges** — `pkexec` prompt by default, opt-in no-password polkit rule. *(implemented)*
+4. **Distribution** — packaged releases plus an install script for now; extensions.gnome.org publication and CI are deferred.
 5. **Icons** — keep the current onion artwork, or draw a cleaner symbolic set? (Note: the Tor Project logo is trademarked; the current hand-drawn onion is safer.)
 
 ---
